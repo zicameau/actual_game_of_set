@@ -26,7 +26,6 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.collectionView.allowsMultipleSelection = true
-
         // Do any additional setup after loading the view.
     }
 
@@ -67,7 +66,7 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return game.getHand().count
+        return game.hand.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -157,14 +156,22 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
         }
         else {
+            collectionView.deselectItem(at: indexPath, animated: false)
+            
             game.removeSetFromHand()
-        
+            
             let selectedCells = collectionView.indexPathsForSelectedItems
             collectionView.deleteItems(at: selectedCells!)
-            for i in 2...0 {
-                let indexPathNew = IndexPath(row: game.hand.count - i, section: 0)
-                collectionView.insertItems(at: [indexPathNew])
+            
+            game.dealThree()
+            
+            var paths = [IndexPath]()
+            for i in 0...2 {
+                print(game.hand.count-4 + i)
+                paths.append(IndexPath(row: game.hand.count-1 + i, section: 0))
             }
+            collectionView.insertItems(at: paths)
+            
             collectionView.reloadData()
         }
         print(game.selectedCards)
